@@ -1,0 +1,51 @@
+2025-03-01 03:44:31,669 - INFO - FastAPI app started successfully.
+2025-03-01 03:48:32,803 - INFO - FastAPI app started successfully.
+2025-03-01 03:49:34,985 - INFO - FastAPI app started successfully.
+2025-03-01 03:51:41,705 - INFO - FastAPI app started successfully.
+2025-03-01 03:52:00,588 - INFO - FastAPI app started successfully.
+2025-03-01 03:52:09,530 - INFO - FastAPI app started successfully.
+2025-03-01 04:04:40,367 - INFO - FastAPI app started successfully.
+2025-03-01 04:08:37,038 - INFO - Cleaned up temporary file: /tmp/tmpj_oh19yp.mp3
+2025-03-01 04:15:51,001 - INFO - Cleaned up temporary file: /tmp/tmpf6qe8ndv.mp3
+2025-03-01 04:16:23,801 - INFO - Cleaned up temporary file: /tmp/tmpeqlncadp.mp3
+2025-03-01 08:25:40,786 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:43,404 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:45,675 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:48,139 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:50,737 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:54,114 - INFO - FastAPI app started successfully.
+2025-03-01 08:25:58,872 - INFO - FastAPI app started successfully.
+2025-03-01 08:26:06,848 - INFO - FastAPI app started successfully.
+2025-03-01 08:26:24,301 - INFO - FastAPI app started successfully.
+2025-03-01 08:26:54,701 - INFO - FastAPI app started successfully.
+2025-03-01 08:27:50,524 - INFO - FastAPI app started successfully.
+2025-03-01 08:28:58,290 - INFO - FastAPI app started successfully.
+2025-03-01 08:30:05,937 - INFO - FastAPI app started successfully.
+2025-03-01 08:31:13,661 - INFO - FastAPI app started successfully.
+2025-03-01 08:32:22,243 - INFO - FastAPI app started successfully.
+2025-03-01 08:33:30,221 - INFO - FastAPI app started successfully.
+2025-03-01 08:34:38,231 - INFO - FastAPI app started successfully.
+2025-03-01 08:37:05,914 - INFO - FastAPI app started successfully.
+2025-03-01 08:37:08,605 - INFO - FastAPI app started successfully.
+2025-03-01 08:37:10,964 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:16,060 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:18,350 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:20,914 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:23,313 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:25,718 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:28,823 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:33,628 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:44,512 - INFO - FastAPI app started successfully.
+2025-03-01 08:38:58,826 - INFO - FastAPI app started successfully.
+2025-03-01 08:39:29,674 - INFO - FastAPI app started successfully.
+2025-03-01 19:46:01,629 - INFO - FastAPI app started successfully.
+2025-03-01 19:46:48,804 - INFO - FastAPI app started successfully.
+2025-03-01 19:47:12,418 - INFO - FastAPI app started successfully.
+2025-03-01 19:52:14,454 - INFO - FastAPI app started successfully.
+2025-03-01 19:55:29,884 - INFO - FastAPI app started successfully.
+2025-03-01 19:55:54,223 - INFO - File received: mock_conversation-_1.wav, Size: 1883598 bytes
+2025-03-01 19:56:04,640 - INFO - Audio file saved at: /tmp/tmpb71kwf8m.wav
+2025-03-01 19:56:08,157 - INFO - error_code=invalid_api_key error_message='Incorrect API key provided: sk-proj-********************************************************************************************************************************************************R-4A. You can find your API key at https://platform.openai.com/account/api-keys.' error_param=None error_type=invalid_request_error message='OpenAI API error received' stream_error=False
+2025-03-01 19:56:08,158 - ERROR - OpenAI API Error: Incorrect API key provided: sk-proj-********************************************************************************************************************************************************R-4A. You can find your API key at https://platform.openai.com/account/api-keys.
+2025-03-01 20:00:35,661 - INFO - FastAPI app started successfully.
+2025-03-01 20:00:59,662 - INFO - Audio file saved at: /tmp/tmp6oe4zfhn.wav

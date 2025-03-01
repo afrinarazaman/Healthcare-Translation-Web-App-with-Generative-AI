@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+openai
+gtts
+cryptography
+python-multipart
+starlette
+openai==0.28
+
