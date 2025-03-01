@@ -5,12 +5,11 @@ FROM node:18
 WORKDIR /app
 
 # Copy package.json and package-lock.json and install dependencies
-COPY frontend/package.json frontend/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy public and src folders into the container
-COPY frontend/public ./public
-COPY frontend/src ./src
+# Copy all files from the current context
+COPY . .
 
 # Pass build arguments into environment variables for the React app
 ARG REACT_APP_API_URL
@@ -21,8 +20,9 @@ ENV REACT_APP_API_KEY=${REACT_APP_API_KEY}
 # Build the React app
 RUN npm run build
 
-# Expose the port
+# Expose the port (Render will assign it dynamically)
 EXPOSE 3000
 
-# Start the React app using a lightweight server
-CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+# Ensure "serve" is installed and use dynamic PORT from Render
+RUN npm install -g serve
+CMD ["sh", "-c", "serve -s build -l ${PORT:-3000}"]
