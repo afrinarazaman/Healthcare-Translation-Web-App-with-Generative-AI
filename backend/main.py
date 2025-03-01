@@ -3,13 +3,12 @@ import tempfile
 import logging
 from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from gtts import gTTS
 from cryptography.fernet import Fernet
 import openai
 from dotenv import load_dotenv
-from fastapi.responses import Response
 
 # Load environment variables from .env
 load_dotenv()
@@ -43,13 +42,16 @@ logging.info("FastAPI app started successfully.")
 # Mount static directory
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "../static")), name="static")
 
-# Language Mapping
+# Language Mapping: ISO code -> Language Name
 LANGUAGE_MAPPING = {
     "en": "English", "es": "Spanish", "fr": "French", "de": "German",
     "zh": "Chinese", "ar": "Arabic", "hi": "Hindi", "it": "Italian",
     "pt": "Portuguese", "ru": "Russian", "ja": "Japanese", "ko": "Korean",
     "tr": "Turkish"
 }
+
+# Reverse mapping: Language Name (lowercase) -> ISO code
+LANGUAGE_NAME_TO_CODE = {v.lower(): k for k, v in LANGUAGE_MAPPING.items()}
 
 @app.get("/favicon.ico")
 async def favicon():
@@ -72,8 +74,6 @@ def cleanup_file(path: str):
 async def root():
     return {"message": "Welcome to the Healthcare Translation App!"}
 
-
-
 @app.post("/transcribe/", dependencies=[Depends(verify_api_key)])
 async def transcribe_audio(file: UploadFile = File(...)):
     try:
@@ -95,7 +95,6 @@ async def transcribe_audio(file: UploadFile = File(...)):
     except Exception as e:
         logging.error(f"General Error during transcription: {e}")
         raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
-
 
 async def translate_text_gpt(text: str, input_lang: str, output_lang: str) -> str:
     try:
@@ -126,7 +125,6 @@ async def translate_text_gpt(text: str, input_lang: str, output_lang: str) -> st
         logging.error(f"Translation error: {e}")
         raise HTTPException(status_code=500, detail="Translation process failed")
 
-
 @app.post("/translate/", dependencies=[Depends(verify_api_key)])
 async def translate_and_speak(
     background_tasks: BackgroundTasks,
@@ -139,29 +137,38 @@ async def translate_and_speak(
         translated_text = await translate_text_gpt(text, input_lang_code, output_lang_code)
         logging.info(f"Translation successful: {translated_text}")
 
+        # Convert provided output language to a valid ISO code if needed
+        if output_lang_code not in LANGUAGE_MAPPING:
+            mapped_code = LANGUAGE_NAME_TO_CODE.get(output_lang_code.lower())
+            if mapped_code:
+                output_lang_code = mapped_code
+            else:
+                logging.warning(f"Language code for '{output_lang_code}' not found. Falling back to English.")
+                output_lang_code = "en"
+
         try:
             tts = gTTS(translated_text, lang=output_lang_code)
         except ValueError as e:
-            logging.error(f"Error in TTS generation: {e}")
+            logging.error(f"Error in TTS generation with lang '{output_lang_code}': {e}")
             tts = gTTS(translated_text, lang="en")
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_audio:
             tts.save(temp_audio.name)
             temp_file_path = temp_audio.name
 
+        # Encrypt the audio file for secure transport
         with open(temp_file_path, "rb") as file:
             encrypted_data = cipher.encrypt(file.read())
         with open(temp_file_path, "wb") as file:
             file.write(encrypted_data)
 
-        background_tasks.add_task(cleanup_file, temp_file_path)
+        # NOTE: Removed immediate cleanup here to ensure the file remains available
         logging.info(f"Returning audio file path: {temp_file_path}")
         return {"original_text": text, "translated_text": translated_text, "audio_file": os.path.basename(temp_file_path)}
 
     except Exception as e:
         logging.error(f"Translation or TTS error: {e}")
         raise HTTPException(status_code=500, detail=f"Translation/TTS process failed: {str(e)}")
-
 
 @app.get("/audio/{filename}", dependencies=[Depends(verify_api_key)])
 async def serve_audio(filename: str, background_tasks: BackgroundTasks):
@@ -177,7 +184,9 @@ async def serve_audio(filename: str, background_tasks: BackgroundTasks):
         with open(decrypted_file_path, "wb") as file:
             file.write(decrypted_data)
 
+        # Schedule cleanup for both decrypted and encrypted files after serving
         background_tasks.add_task(cleanup_file, decrypted_file_path)
+        background_tasks.add_task(cleanup_file, file_path)
         return FileResponse(decrypted_file_path, media_type="audio/mp3")
     except Exception as e:
         logging.error(f"Audio decryption error: {e}")
@@ -190,4 +199,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
