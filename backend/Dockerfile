@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy backend environment variables
-COPY backend/.env .env
+#COPY backend/.env .env
 
 # Copy backend requirements and install dependencies
 COPY backend/requirements.txt .
