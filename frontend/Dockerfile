@@ -8,8 +8,9 @@ WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
 
-# Copy all files from the current context
-COPY . .
+# Copy public and src folders into the container
+COPY frontend/public ./public
+COPY frontend/src ./src
 
 # Pass build arguments into environment variables for the React app
 ARG REACT_APP_API_URL
