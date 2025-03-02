@@ -1,7 +1,8 @@
-# Healthcare-Translation-Web-App-with-Generative-AI
 # Healthcare Translation App
 
-The **Healthcare Translation App** is a full-stack application designed to overcome language barriers in healthcare settings. It provides accurate speech-to-text transcription, medical translation using GPT-4, and text-to-speech conversion. The backend is built with **FastAPI (Python)**, and the frontend is developed using **React**. **Docker** and **Docker Compose** are used for seamless local development and deployment to cloud services like **Render**.
+The Healthcare Translation App is a full-stack application designed to overcome language barriers in healthcare settings. It provides accurate speech-to-text transcription, medical translation using GPT-4, and text-to-speech conversion. The backend is built with FastAPI (Python) and the frontend with React. Containerization using Docker and Docker Compose enables seamless local development as well as cloud deployment (e.g., on Render).
+
+🔗 **Live App:** [Healthcare Translation App](https://healthcare-translation-web-app-with-v277.onrender.com)
 
 ---
 
@@ -15,6 +16,7 @@ The **Healthcare Translation App** is a full-stack application designed to overc
   - [Frontend (.env)](#frontend-env)
 - [Local Development](#local-development)
 - [Deployment on Render](#deployment-on-render)
+- [CI/CD Using GitHub Actions](#cicd-using-github-actions)
 - [Additional Notes](#additional-notes)
 
 ---
@@ -30,16 +32,13 @@ The **Healthcare Translation App** is a full-stack application designed to overc
 ---
 
 ## Project Structure
-
 ```
 .
 ├── backend/
-│   ├── __pycache__/
-│   ├── Dockerfile
-│   ├── app.log
-│   ├── main.py
-│   ├── requirements.txt
-│   ├── .env  # Backend environment variables (not committed)
+│   ├── main.py                  # FastAPI backend code
+│   ├── requirements.txt          # Python dependencies
+│   ├── Dockerfile                # Backend Dockerfile
+│   ├── .env                      # Backend environment variables (not included in GitHub)
 │
 ├── frontend/
 │   ├── public/
@@ -47,19 +46,15 @@ The **Healthcare Translation App** is a full-stack application designed to overc
 │   │   ├── index.html
 │   ├── src/
 │   │   ├── app.jsx
-│   │   ├── index.css
 │   │   ├── index.js
-│   ├── static/
-│   │   ├── index.html
-│   ├── Dockerfile
+│   │   ├── index.css
+│   ├── Dockerfile                # Dockerfile for Render deployment
+│   ├── package.json              # React app dependencies
 │   ├── package-lock.json
-│   ├── package.json
-│   ├── .env  # Frontend environment variables (not committed)
+│   ├── .env                      # Frontend environment variables (not included in GitHub)
 │
-├── docker-compose.yaml
-├── mock_conversation_1.wav
+├── docker-compose.yaml            # Docker Compose file for local development
 ```
-
 ---
 
 ## Prerequisites
@@ -73,11 +68,12 @@ The **Healthcare Translation App** is a full-stack application designed to overc
 
 ### Backend (.env)
 
-Create a file at `backend/.env` with the following content:
+Create a file at `backend/.env` with the following content (replace the example values with your own):
 
 ```env
-OPENAI_API_KEY=your_openai_api_key
-ENCRYPTION_KEY=your_encryption_key
+API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+ENCRYPTION_KEY=your_encryption_key_here
 ```
 
 ### Frontend (.env)
@@ -85,8 +81,8 @@ ENCRYPTION_KEY=your_encryption_key
 Create a file at `frontend/.env` with the following content:
 
 ```env
+REACT_APP_API_KEY=your_api_key_here
 REACT_APP_API_URL=http://127.0.0.1:8000
-REACT_APP_API_KEY=your_frontend_api_key
 ```
 
 ---
@@ -96,8 +92,8 @@ REACT_APP_API_KEY=your_frontend_api_key
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/healthcare-translation-app.git
-cd healthcare-translation-app
+git clone https://github.com/afrinarazaman/Healthcare-Translation-Web-App-with-Generative-AI.git
+cd Healthcare-Translation-Web-App-with-Generative-AI
 ```
 
 ### Set Up Environment Files
@@ -105,6 +101,8 @@ cd healthcare-translation-app
 Place the `backend/.env` and `frontend/.env` files in their respective directories as described above.
 
 ### Build and Run the Containers
+
+Use the following Docker Compose commands:
 
 ```bash
 docker-compose down
@@ -118,52 +116,65 @@ docker-compose up --build
 
 ## Deployment on Render
 
-This project is configured for deployment on **Render** using Docker. The `Dockerfile`s for the backend and frontend are tailored for Render’s environment.
-
 ### Backend on Render
 
-1. **Create a New Web Service on Render:**
-   - Use the **Dockerfile** located in the `backend/` directory.
-   - Set up environment variables from the `backend/.env` file.
+Create a **New Web Service** on Render:
+- Use the Dockerfile located in the `backend/` directory.
+- Set the build and runtime environment variables using the values in your `backend/.env` file.
 
 ### Frontend on Render
 
-1. **Create a New Web Service on Render:**
-   - Use the **Dockerfile** located in the `frontend/` directory.
-   - Set build arguments for `REACT_APP_API_URL` and `REACT_APP_API_KEY`.
-   - Update `REACT_APP_API_URL` to point to your backend's Render URL (e.g., `https://your-backend-service.onrender.com`).
+Your frontend Dockerfile for Render is already uploaded to GitHub, so simply create a **New Web Service** on Render and link it to your GitHub repository.
 
-### Frontend Dockerfile for Render
+For deployment on Render, update the **`REACT_APP_API_URL`** to point to your backend's Render URL (e.g., `https://your-backend-service.onrender.com`).
 
-```dockerfile
-# Use Node.js as the base image
-FROM node:18
+---
 
-# Set working directory inside the container
-WORKDIR /app
+## CI/CD Using GitHub Actions
 
-# Copy package.json and package-lock.json and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+To automate testing and deployment, you can use GitHub Actions. Below is a sample `.github/workflows/deploy.yml` workflow for building and deploying both backend and frontend to Render.
 
-# Copy all files from the current context
-COPY . .
+### Example GitHub Actions Workflow (`.github/workflows/deploy.yml`):
 
-# Pass build arguments into environment variables for the React app
-ARG REACT_APP_API_URL
-ARG REACT_APP_API_KEY
-ENV REACT_APP_API_URL=${REACT_APP_API_URL}
-ENV REACT_APP_API_KEY=${REACT_APP_API_KEY}
+```yaml
+name: Deploy to Render
 
-# Build the React app
-RUN npm run build
+on:
+  push:
+    branches:
+      - main
 
-# Expose the port
-EXPOSE 3000
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-# Start the React app using a lightweight server
-CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push Docker images
+      run: |
+        docker build -t my-backend-image ./backend
+        docker build -t my-frontend-image ./frontend
+
+    - name: Deploy to Render
+      env:
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      run: |
+        curl -X POST "https://api.render.com/v1/services/my-backend-service/deploys" -H "Authorization: Bearer $RENDER_API_KEY"
+        curl -X POST "https://api.render.com/v1/services/my-frontend-service/deploys" -H "Authorization: Bearer $RENDER_API_KEY"
 ```
+
+### Steps in the Workflow:
+1. **Trigger:** Runs when changes are pushed to the `main` branch.
+2. **Checkout:** Pulls the latest repository code.
+3. **Docker Build:** Builds the Docker images for both backend and frontend.
+4. **Deploy:** Triggers a deployment on Render using the Render API.
+
+To use this workflow, add your **Render API Key** as a GitHub Secret (`RENDER_API_KEY`).
 
 ---
 
@@ -171,8 +182,6 @@ CMD ["npx", "serve", "-s", "build", "-l", "3000"]
 
 - **Security:** Keep API keys and sensitive information secure. Do not expose them in your public repository.
 - **Logs & Troubleshooting:** Use `docker-compose logs` for local troubleshooting. For Render deployments, refer to the logs available on the Render dashboard.
-- **Customization:** Adjust the `docker-compose.yaml` and `Dockerfile`s as needed for your specific environment and deployment requirements.
+- **Customization:** Feel free to adjust the Docker Compose file and Dockerfiles as needed for your specific environment and deployment requirements.
 
-**Happy coding! 🚀**
-
-#### App live link: https://healthcare-translation-web-app-with-v277.onrender.com
+🚀 **Happy coding!**
