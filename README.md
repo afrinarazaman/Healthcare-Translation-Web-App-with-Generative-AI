@@ -2,8 +2,6 @@
 
 The Healthcare Translation App is a full-stack application designed to overcome language barriers in healthcare settings. It provides accurate speech-to-text transcription, medical translation using GPT-4, and text-to-speech conversion. The backend is built with FastAPI (Python) and the frontend with React. Containerization using Docker and Docker Compose enables seamless local development as well as cloud deployment (e.g., on Render).
 
-🔗 **Live App:** [Healthcare Translation App](https://healthcare-translation-web-app-with-v277.onrender.com)
-
 ---
 
 ## Table of Contents
